@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import MoviesList from './components/MoviesList';
 import './App.css';
@@ -7,17 +7,17 @@ function App() {
     const [movies, setMovies] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
-    const [retrying, setRetrying] = useState(true);
-    const [timeoutId, setTimeoutId] = useState(null);
+   // const [retrying, setRetrying] = useState(true);
+  //  const [timeoutId, setTimeoutId] = useState(null);
 
-
-
-
+    useEffect(() => {
+         fetchMoviesHandler();
+    },[]);
     async function fetchMoviesHandler() {
         setIsLoading(true);
         setError(null);
         try {
-            const response = await fetch('https://swapi.dev/api/film/');
+            const response = await fetch('https://swapi.dev/api/films/');
 
             if (!response.ok) {
                 throw new Error('Something went wrong....Retrying')
@@ -39,32 +39,29 @@ function App() {
             setError(error.message);
         }
         setIsLoading(false);
-        if (retrying) {
-            const id = setTimeout(fetchMoviesHandler, 5000);
-            setTimeoutId(id);
-        }
+        // if (retrying) {
+        //     const id = setTimeout(fetchMoviesHandler, 5000);
+        //     setTimeoutId(id);
+        // }
     };
 
-    function cancelRetryHandler() {
-        setRetrying(false);
-        clearTimeout(timeoutId);
+    // function cancelRetryHandler() {
+    //     setRetrying(false);
+    //     clearTimeout(timeoutId);
+//{retrying && < button onClick = { cancelRetryHandler } > Cancel Retry </button>} 
+    // }
 
-    }
-
-    return ( <
-            React.Fragment >
-            <
-            section >
-            <
-            button onClick = { fetchMoviesHandler } > Fetch Movies < /button> {
-                retrying && < button onClick = { cancelRetryHandler } > Cancel Retry < /button>} <
-                    /section> <
-                    section > {!isLoading && < MoviesList movies = { movies }
-                        />} {
-                            isLoading && < p > Loading... < /p>} {
-                                !isLoading && retrying && error && < p > { error } < /p>} <
-                                    /section> <
-                                    /React.Fragment>
+    return ( 
+        <React.Fragment>
+            <section>
+            <button onClick = {fetchMoviesHandler}> Fetch Movies </button> 
+            
+                </section> 
+                <section> {!isLoading && < MoviesList movies = { movies }/>} 
+                {isLoading && < p > Loading... </p>}
+                 {!isLoading  && error && < p > { error } </p>} 
+                 </section> 
+                 </React.Fragment>
                             );
                         }
 
