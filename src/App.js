@@ -1,18 +1,27 @@
 import React, { useState, useEffect } from 'react';
-
+import MovieForm from './components/MovieForm';
 import MoviesList from './components/MoviesList';
 import './App.css';
 
-function App() {
+function App(props) {
     const [movies, setMovies] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
-   // const [retrying, setRetrying] = useState(true);
-  //  const [timeoutId, setTimeoutId] = useState(null);
+
+
+    function addMovieHandler(title, openText, releasedate) {
+        console.log(title);
+        console.log(openText);
+        console.log(releasedate);
+    }
+
+    // const [retrying, setRetrying] = useState(true);
+    //  const [timeoutId, setTimeoutId] = useState(null);
+
 
     useEffect(() => {
-         fetchMoviesHandler();
-    },[]);
+        fetchMoviesHandler();
+    }, []);
     async function fetchMoviesHandler() {
         setIsLoading(true);
         setError(null);
@@ -48,21 +57,25 @@ function App() {
     // function cancelRetryHandler() {
     //     setRetrying(false);
     //     clearTimeout(timeoutId);
-//{retrying && < button onClick = { cancelRetryHandler } > Cancel Retry </button>} 
+    //{retrying && < button onClick = { cancelRetryHandler } > Cancel Retry </button>} 
     // }
 
-    return ( 
-        <React.Fragment>
-            <section>
-            <button onClick = {fetchMoviesHandler}> Fetch Movies </button> 
-            
-                </section> 
-                <section> {!isLoading && < MoviesList movies = { movies }/>} 
-                {isLoading && < p > Loading... </p>}
-                 {!isLoading  && error && < p > { error } </p>} 
-                 </section> 
-                 </React.Fragment>
-                            );
-                        }
+    return ( <
+            React.Fragment >
+            <
+            MovieForm onAddMovie = { addMovieHandler }
+            /> <
+            section >
+            <
+            button onClick = { fetchMoviesHandler } > Fetch Movies < /button>  <
+            /section>  <
+            section > {!isLoading && < MoviesList movies = { movies }
+                />}  {
+                    isLoading && < p > Loading... < /p>} {
+                        !isLoading && error && < p > { error } < /p>}  <
+                            /section>  <
+                            /React.Fragment>
+                    );
+                }
 
-                        export default App;
+                export default App;
