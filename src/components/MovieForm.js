@@ -1,70 +1,58 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from 'react';
 
-const MovieForm = (props) => {
-    const [title, setTitle] = useState('');
-    const [openingText, setOpeningText] = useState('');
-    const [releaseDate, setReleaseDate] = useState('');
+import classes from './MovieForm.module.css';
 
-    const titleHandler = (event) => {
-        setTitle(event.target.value);
-    }
+function AddMovie(props) {
+    const titleRef = useRef('');
+    const openingTextRef = useRef('');
+    const releaseDateRef = useRef('');
 
-    const openingTextHandler = (event) => {
-        setOpeningText(event.target.value);
-    }
+    //   const [title, setTitle] = useState('');
 
-    const releaseDateHandler = (event) => {
-        setReleaseDate(event.target.value);
-    }
-
-    const submitHandler = (event) => {
+    function submitHandler(event) {
         event.preventDefault();
 
-        props.onAddMovie(title, openingText, releaseDate);
-        setTitle('');
-        setOpeningText('');
-        setReleaseDate('');
-    };
+        const movie = {
+            title: titleRef.current.value,
+            openingText: openingTextRef.current.value,
+            releaseDate: releaseDateRef.current.value,
+        };
+
+        props.onAddMovie(movie);
+
+        // console.log(movie);
+        // setTitle('');
+    }
 
     return ( <
-        React.Fragment >
-        <
-        section >
-        <
         form onSubmit = { submitHandler } >
         <
-        div >
+        div className = { classes.control } >
         <
-        label > Title < /label> <
-        input type = "text"
-        id = "title"
-        value = { title }
-        onChange = { titleHandler }
+        label htmlFor = 'title' > Title < /label> <
+        input type = 'text'
+        id = 'title'
+        ref = { titleRef }
         /> <
         /div> <
-        div >
+        div className = { classes.control } >
         <
-        label > Opening Text < /label> <
-        textarea type = "text"
-        id = "opening-text"
-        rows = '5'
-        value = { openingText }
-        onChange = { openingTextHandler } > < /textarea> <
+        label htmlFor = 'opening-text' > Opening Text < /label> <
+        textarea rows = '5'
+        id = 'opening-text'
+        ref = { openingTextRef } > < /textarea> <
         /div> <
-        div >
+        div className = { classes.control } >
         <
-        label > Release Date < /label> <
-        input type = "text"
-        id = "release-date"
-        value = { releaseDate }
-        onChange = { releaseDateHandler }
+        label htmlFor = 'date' > Release Date < /label> <
+        input type = 'text'
+        id = 'date'
+        ref = { releaseDateRef }
         /> <
         /div> <
         button > Add Movie < /button> <
-        /form> <
-        /section> <
-        /React.Fragment>
+        /form>
     );
-};
+}
 
-export default MovieForm;
+export default AddMovie;

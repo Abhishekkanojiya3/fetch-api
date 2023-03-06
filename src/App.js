@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import MovieForm from './components/MovieForm';
 import MoviesList from './components/MoviesList';
 import './App.css';
@@ -9,11 +9,19 @@ function App(props) {
     const [error, setError] = useState(null);
 
 
-    function addMovieHandler(title, openText, releasedate) {
-        console.log(title);
-        console.log(openText);
-        console.log(releasedate);
+    async function addMovieHandler(movie) {
+        const response = await fetch('https://http-react-1dd05-default-rtdb.firebaseio.com//movies.json', {
+            method: 'POST',
+            body: JSON.stringify(movie),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+        const data = await response.json();
+        console.log(data);
+        fetchMoviesHandler()
     }
+
 
     // const [retrying, setRetrying] = useState(true);
     //  const [timeoutId, setTimeoutId] = useState(null);
@@ -22,11 +30,11 @@ function App(props) {
     useEffect(() => {
         fetchMoviesHandler();
     }, []);
-    async function fetchMoviesHandler() {
+    async function fetchMoviesHandler(props) {
         setIsLoading(true);
         setError(null);
         try {
-            const response = await fetch('https://swapi.dev/api/films/');
+            const response = await fetch('https://http-react-1dd05-default-rtdb.firebaseio.com/movies.json');
 
             if (!response.ok) {
                 throw new Error('Something went wrong....Retrying')
@@ -34,15 +42,18 @@ function App(props) {
             const data = await response.json()
 
 
-            const transformedMovies = data.results.map((movieData) => {
-                return {
-                    id: movieData.episode_id,
-                    title: movieData.title,
-                    openingText: movieData.opening_crawl,
-                    releaseDate: movieData.release_date
-                };
-            });
-            setMovies(transformedMovies);
+
+            const loadedMovies = [];
+
+            for (const key in data) {
+                loadedMovies.push({
+                    id: key,
+                    title: data[key].title,
+                    openingText: data[key].openingText,
+                    releaseDate: data[key].releaseDate,
+                })
+            }
+            setMovies(loadedMovies);
 
         } catch (error) {
             setError(error.message);
@@ -64,17 +75,19 @@ function App(props) {
             React.Fragment >
             <
             MovieForm onAddMovie = { addMovieHandler }
-            /> <
+            />  <
             section >
             <
             button onClick = { fetchMoviesHandler } > Fetch Movies < /button>  <
-            /section>  <
+            /section>   <
             section > {!isLoading && < MoviesList movies = { movies }
-                />}  {
+                />}   {
                     isLoading && < p > Loading... < /p>} {
                         !isLoading && error && < p > { error } < /p>}  <
-                            /section>  <
-                            /React.Fragment>
+                            /section> 
+
+                        <
+                        /React.Fragment>
                     );
                 }
 
